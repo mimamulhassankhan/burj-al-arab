@@ -11,6 +11,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 const Login = () => {
 
+    const [loggedInUser, setLoggedInUser] = useContext(UserContext);
+
     if(firebase.apps.length === 0){
         firebase.initializeApp(firebaseConfig);
     }
@@ -19,7 +21,6 @@ const Login = () => {
     const location = useLocation();
 
     const {from} = location.state || { from : {pathname : "/"}};
-    const [loggedInUser, setLoggedInUser] = useContext(UserContext);
 
 
     const handleGoogleSignIn = () => {
@@ -30,12 +31,21 @@ const Login = () => {
                 const {displayName, email} = res.user;
                 const newSignedInUser = {name : displayName, email};
                 setLoggedInUser(newSignedInUser);
-                history.replace(from);
+                storeAuthToken();
             })
             .catch(err => {
                 console.log(err.message);
             })
+    }
 
+    const storeAuthToken = () => {
+        firebase.auth().currentUser.getIdToken(/* forceRefresh */ true)
+        .then(function(idToken) {
+            sessionStorage.setItem('token', idToken);
+            history.replace(from);
+          }).catch(function(error) {
+            // Handle error
+          });
     }
     return (
         <div>

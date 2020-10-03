@@ -10,7 +10,9 @@ import Login from './components/Login/Login';
 import Book from './components/Book/Book';
 import Header from './components/Header/Header';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import {initializeIcons} from '@uifabric/icons';
 
+initializeIcons();
 
 export const UserContext = createContext();
 
